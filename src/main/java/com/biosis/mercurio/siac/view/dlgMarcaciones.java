@@ -16,8 +16,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,6 +37,15 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     private String mNewTmplName = null;
     public MyIcon  m_FingerPrintImage;
     public BufferedImage m_hImage;
+    /**
+    * database directory name.
+    */
+    public static String m_DbDir;
+    //Reloj
+    private final SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm");
+    private final SimpleDateFormat sdfDate  = new SimpleDateFormat("dd/MM/yyyy");
+    private int   currentSecond;
+    private Calendar calendar;
     
 
     /**
@@ -38,6 +54,31 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     public dlgMarcaciones(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        mMatchScoreValue[0] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_LOW;
+        mMatchScoreValue[1] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_LOW_MEDIUM;
+        mMatchScoreValue[2] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_MEDIUM;
+        mMatchScoreValue[3] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_HIGH_MEDIUM;
+        mMatchScoreValue[4] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_HIGH;
+        mMatchScoreValue[5] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_VERY_HIGH;
+        // Get database folder
+        try
+        {
+            m_DbDir = GetDatabaseDir();
+        }
+        catch( Exception e )
+        {
+            JOptionPane.showMessageDialog(null,
+                                          "Initialization failed. Application will be close.\nError description: " + e.getMessage(),
+                                          getTitle(), JOptionPane.ERROR_MESSAGE);
+            System.exit( 0 );
+        }
+        m_FingerPrintImage = new MyIcon();
+        FingerImage.setIcon(m_FingerPrintImage);
+        /**
+         * Reloj
+         */
+        this.start();
+        txtFecha.setText(sdfDate.format(calendar.getTime()));
     }
 
     /**
@@ -57,14 +98,18 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         pnlDni = new javax.swing.JPanel();
         lblDni = new javax.swing.JLabel();
         txtDni = new javax.swing.JTextField();
-        pnlHoraFecha = new javax.swing.JPanel();
-        lblHora = new javax.swing.JLabel();
-        lblFecha = new javax.swing.JLabel();
-        txtHora = new javax.swing.JTextField();
-        txtFecha = new javax.swing.JTextField();
         FingerImage = new javax.swing.JLabel();
         btnMarcar = new javax.swing.JButton();
         LabelMessage = new javax.swing.JLabel();
+        btnMarcaciones = new javax.swing.JButton();
+        btnEnrolar = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        pnlHoraFecha = new javax.swing.JPanel();
+        lblHora = new javax.swing.JLabel();
+        lblFecha = new javax.swing.JLabel();
+        txtHora = new javax.swing.JLabel();
+        txtFecha = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -73,11 +118,6 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         lblNombreSis.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         lblNombreSis.setForeground(new java.awt.Color(27, 54, 93));
         lblNombreSis.setText("SISTEMA DE ASISTENCIA EN CENTROS");
-
-        java.awt.GridBagLayout pnlDatosLayout = new java.awt.GridBagLayout();
-        pnlDatosLayout.columnWidths = new int[] {0, 8, 0};
-        pnlDatosLayout.rowHeights = new int[] {0};
-        pnlDatos.setLayout(pnlDatosLayout);
 
         java.awt.GridBagLayout pnlDniLayout1 = new java.awt.GridBagLayout();
         pnlDniLayout1.columnWidths = new int[] {0, 8, 0};
@@ -102,12 +142,43 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         gridBagConstraints.weightx = 0.1;
         pnlDni.add(txtDni, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.05;
-        pnlDatos.add(pnlDni, gridBagConstraints);
+        javax.swing.GroupLayout pnlDatosLayout = new javax.swing.GroupLayout(pnlDatos);
+        pnlDatos.setLayout(pnlDatosLayout);
+        pnlDatosLayout.setHorizontalGroup(
+            pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlDatosLayout.createSequentialGroup()
+                .addComponent(pnlDni, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlDatosLayout.setVerticalGroup(
+            pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlDni, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        FingerImage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnMarcar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        btnMarcar.setForeground(new java.awt.Color(27, 54, 93));
+        btnMarcar.setText("MARCAR");
+        btnMarcar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMarcarActionPerformed(evt);
+            }
+        });
+
+        LabelMessage.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        LabelMessage.setForeground(new java.awt.Color(28, 33, 37));
+        LabelMessage.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        btnMarcaciones.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        btnMarcaciones.setForeground(new java.awt.Color(28, 33, 37));
+        btnMarcaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searcher16x16.png"))); // NOI18N
+        btnMarcaciones.setText("Marcaciones");
+
+        btnEnrolar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        btnEnrolar.setForeground(new java.awt.Color(28, 33, 37));
+        btnEnrolar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/add16x16.png"))); // NOI18N
+        btnEnrolar.setText("Enrolar");
 
         java.awt.GridBagLayout pnlHoraFechaLayout = new java.awt.GridBagLayout();
         pnlHoraFechaLayout.columnWidths = new int[] {0, 8, 0};
@@ -149,56 +220,44 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         pnlHoraFecha.add(txtFecha, gridBagConstraints);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.05;
-        pnlDatos.add(pnlHoraFecha, gridBagConstraints);
-
-        FingerImage.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
-        btnMarcar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        btnMarcar.setForeground(new java.awt.Color(27, 54, 93));
-        btnMarcar.setText("MARCAR");
-        btnMarcar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMarcarActionPerformed(evt);
-            }
-        });
-
-        LabelMessage.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        LabelMessage.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addComponent(lblNombreSis)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(lblLogo))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(btnMarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53)
-                        .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(37, 37, 37))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(100, 100, 100)
-                        .addComponent(pnlBoton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                        .addComponent(btnMarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54)
+                        .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(pnlBoton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addComponent(lblNombreSis))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnMarcaciones)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnEnrolar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49)
+                                .addComponent(pnlHoraFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addComponent(jSeparator2)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(103, 103, 103)
+                .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -207,23 +266,31 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                 .addComponent(lblLogo)
                 .addGap(20, 20, 20)
                 .addComponent(lblNombreSis)
-                .addGap(18, 18, 18)
-                .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlHoraFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(pnlBoton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlBoton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addGap(40, 40, 40)
+                        .addComponent(btnMarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnMarcaciones)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnMarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(52, 52, 52))))
+                        .addComponent(btnEnrolar)
+                        .addContainerGap())))
         );
 
         pack();
@@ -285,7 +352,11 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel FingerImage;
     private javax.swing.JLabel LabelMessage;
+    private javax.swing.JButton btnEnrolar;
+    private javax.swing.JButton btnMarcaciones;
     private javax.swing.JButton btnMarcar;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel lblDni;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblHora;
@@ -296,8 +367,8 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     private javax.swing.JPanel pnlDni;
     private javax.swing.JPanel pnlHoraFecha;
     private javax.swing.JTextField txtDni;
-    private javax.swing.JTextField txtFecha;
-    private javax.swing.JTextField txtHora;
+    private javax.swing.JLabel txtFecha;
+    private javax.swing.JLabel txtHora;
     // End of variables declaration//GEN-END:variables
     private class CaptureThread extends OperationThread 
     {
@@ -328,12 +399,12 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                     return;
                 }
                 byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
-                LabelMessage.setText("Please put finger...");
+                LabelMessage.setText("Por favor ponga su dedo...");
                 for(;;)
                 {
                     if( IsCanceled() )
                     {
-                        LabelMessage.setText("Cancelled");
+                        LabelMessage.setText("Cancelado");
                         break;
                     }
                     if(ansi_lib.CaptureImage(img_buffer))
@@ -347,7 +418,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                         }
                         m_FingerPrintImage.setImage( m_hImage );
                         FingerImage.repaint();
-                        LabelMessage.setText("Capture done.");
+                        LabelMessage.setText("Captura realizada.");
                         break;
                     }
                     else
@@ -362,7 +433,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                         }
                         else
                         {
-                            String error = String.format("Capture failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                            String error = String.format("Falla en captura. Error: %s.",  ansi_lib.GetErrorMessage());   
                             LabelMessage.setText(error);
                             break;
                         }
@@ -382,7 +453,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         }
     }
 
-    private class CreateThread extends OperationThread 
+        private class CreateThread extends OperationThread 
     {
         private AnsiSDKLib ansi_lib = null;
         private byte mFinger = 0;
@@ -498,7 +569,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
             File f = null;
             try
             {
-                f = new File("//" + name );
+                f = new File( m_DbDir + "//" + name );
                 fs = new FileOutputStream( f ); 
                 byte[] writeTemplate = new byte[size];
                 System.arraycopy(template, 0, writeTemplate, 0, size);
@@ -698,7 +769,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
             File DbDir;
             File[] files;
             // Read all records to identify
-            DbDir = new File("");
+            DbDir = new File( m_DbDir );
             files = DbDir.listFiles();
             float[] matchResult = new float[1];
             boolean found = false; 
@@ -746,6 +817,31 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         }
     }
     
+    private boolean isUserExists( String szUserName )
+    {
+        File f = new File( m_DbDir, szUserName );
+        return f.exists();
+    }
+
+    private void CreateFile( String szFileName )
+        throws Exception
+    {
+        File f = new File( m_DbDir, szFileName );
+        try
+        {
+            f.createNewFile();
+            f.delete();
+        }
+        catch( IOException e )
+        {
+            throw new Exception( "Can not create file " + szFileName + " in database." );
+        }
+        catch( SecurityException e )
+        {
+            throw new Exception( "Can not create file " + szFileName + " in database. Access denied" );
+        }
+    }
+    
     private  class MyIcon implements  Icon
     {
         public MyIcon()
@@ -765,13 +861,13 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         @Override
         public int getIconWidth()
         {
-            return 130;
+            return 148;
         }
 
         @Override
         public int getIconHeight()
         {
-            return 230;
+            return 198;
         }
 
         public boolean LoadImage( String path )
@@ -801,5 +897,55 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         }
 
         private Image m_Image;
+    }
+    /**
+     * Get the database directory.
+     *
+     * @return the database directory.
+     */
+    static private String GetDatabaseDir() throws Exception
+    {
+        String szDbDir;
+        File f = new File( "Database" );
+        if( f.exists() )
+        {
+            if( !f.isDirectory() )
+                throw new Exception( "Can not create database directory " + f.getAbsolutePath() + 
+                        ". File with the same name already exist." );
+        } else {
+            try
+            {
+                f.mkdir();
+            }
+            catch( SecurityException e )
+            {
+                throw new Exception( "Can not create database directory " + f.getAbsolutePath() +
+                        ". Access denied.");
+            }
+        }
+        szDbDir = f.getAbsolutePath();
+
+        return szDbDir;
+    }
+    
+    /**
+     * Reloj functions
+     */
+    private void reset(){
+        calendar = Calendar.getInstance();
+        currentSecond = calendar.get(Calendar.SECOND);
+    }
+    public void start(){
+        reset();
+        ScheduledExecutorService worker = Executors.newScheduledThreadPool(3);
+         worker.scheduleAtFixedRate( new Runnable(){
+            public void run(){
+                if( currentSecond == 60 ) {
+                    reset();
+                }
+                txtHora.setText( String.format("%s:%02d", sdf.format(calendar.getTime()), currentSecond));
+                currentSecond++;
+            }
+        }, 0, 1000 ,TimeUnit.MILLISECONDS );
     }
 }
