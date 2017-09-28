@@ -5,7 +5,7 @@
  */
 package com.biosis.mercurio.siac.view;
 
-import com.biosis.mercurio.ansisdk.AnsiSDKLib;
+import com.futronictech.AnsiSDKLib;
 import com.sun.glass.ui.View;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -233,7 +233,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         // TODO add your handling code here
         EnableControls(false);
         mOperationThread = new CaptureThread();
-        
+        mOperationThread.start();
     }//GEN-LAST:event_btnMarcarActionPerformed
 
     /**
