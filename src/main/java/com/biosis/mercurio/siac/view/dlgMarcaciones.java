@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,6 +23,8 @@ import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
@@ -298,9 +301,64 @@ public class dlgMarcaciones extends javax.swing.JDialog {
 
     private void btnMarcarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarcarActionPerformed
         // TODO add your handling code here
-        EnableControls(false);
-        mOperationThread = new CaptureThread();
-        mOperationThread.start();
+        if( txtDni.getText().isEmpty() )
+        {
+            System.out.println("Entra aca");
+            JOptionPane.showMessageDialog(this,
+                                          "Ingrese dni",
+                                          getTitle(), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String dniANSI = txtDni.getText()+".ansi";
+        String dniISO = txtDni.getText()+".iso";
+        
+        String tmplName = null;
+        byte[] templateContent = null;
+        FileInputStream fs = null;
+        File f = null;
+        if(!(new File(m_DbDir+"//"+dniANSI)).exists() || !(new File(m_DbDir+"//"+dniANSI)).canRead()){
+            if(!(new File(m_DbDir+"//"+dniISO)).exists() || !(new File(m_DbDir+"//"+dniISO)).canRead()){
+                JOptionPane.showMessageDialog(this,
+                                          "Ingrese dni registrado",
+                                          getTitle(), JOptionPane.ERROR_MESSAGE);
+            return;
+            }else{
+                tmplName = dniISO;
+                            System.out.println("Nomber ansi: "+tmplName);
+
+            }
+        }else{
+            tmplName = dniANSI;
+            System.out.println("Nomber ansi: "+tmplName);
+        }
+        
+        try
+        {
+            f = new File( m_DbDir + "//" + tmplName );
+            if( !f.exists() || !f.canRead() )
+                throw new FileNotFoundException();
+	        
+            long nFileSize = f.length();
+            fs = new FileInputStream( f );           
+            byte[] fileContent = new byte[(int)nFileSize];
+            fs.read( fileContent );
+            fs.close();
+           
+            templateContent = fileContent;
+        }
+        catch( Exception e)
+        {
+            String error = String.format("Failed to load template from file %s. Error: %s.", tmplName, e.toString());   
+            LabelMessage.setText(error);
+        }
+
+        if(templateContent!=null)
+        {
+            EnableControls(false);
+            mOperationThread = new VerifyThread( (byte)0,templateContent,mMatchScoreValue[2]);
+            mOperationThread.start();
+        }
+        EnableControls(false);       
     }//GEN-LAST:event_btnMarcarActionPerformed
 
     /**
@@ -618,19 +676,19 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                     EnableControls(true);
                     return;
                 }
-                LabelMessage.setText("Please put finger...");
+                LabelMessage.setText("Por favor ponga su dedo...");
                 byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
                 for(;;)
                 {
                     if( IsCanceled() )
                     {
-                        LabelMessage.setText("Cancelled.");
+                        LabelMessage.setText("Cancelado");
                         break;
                     }
                     float[] matchResult = new float[1];
                     if(ansi_lib.VerifyTemplate(mFinger,mTmpl,img_buffer,matchResult))
                     {
-                        String op_info = String.format("Verify done. Result: %s(%f).", matchResult[0]>mMatchScore ? "OK" : "FAILED", matchResult[0]);                		
+                        String op_info = String.format("Resultado : %s - %s.", txtDni.getText(), matchResult[0]>mMatchScore ? "OK" : "FALLO");                		
                         LabelMessage.setText(op_info);
                         m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY );
                         DataBuffer db1 = m_hImage.getRaster().getDataBuffer();
@@ -671,6 +729,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                 ansi_lib.CloseDevice();
             }
             EnableControls(true);
+            cleanItems();
         }
     }
     
@@ -947,5 +1006,9 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                 currentSecond++;
             }
         }, 0, 1000 ,TimeUnit.MILLISECONDS );
+    }
+    
+    private void cleanItems(){
+        txtDni.setText("");
     }
 }
