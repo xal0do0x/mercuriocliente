@@ -5,16 +5,33 @@
  */
 package com.biosis.mercurio.siac.view;
 
+import com.biosis.mercurio.siac.controladores.Controlador;
 import com.biosis.mercurio.siac.controladores.EmpleadoControlador;
 import com.biosis.mercurio.siac.controladores.ProveedorControlador;
 import com.biosis.mercurio.siac.controladores.SedeControlador;
 import com.biosis.mercurio.siac.controladores.TemplateControlador;
+import static com.biosis.mercurio.siac.view.dlgMarcaciones.m_DbDir;
+import com.biosisperu.mercurio.siac.domain.Empleado;
 import com.biosisperu.mercurio.siac.domain.Proveedor;
 import com.biosisperu.mercurio.siac.domain.Sede;
+import com.futronictech.AnsiSDKLib;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -26,12 +43,33 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
     private TemplateControlador tc;
     private SedeControlador sc;
     private ProveedorControlador pc;
+    public MyIcon  m_FingerPrintImage;
+    public BufferedImage m_hImage;
+    public MyIcon  m_FingerPrintImage1;
+    public BufferedImage m_hImage2;
+    private OperationThread mOperationThread1 = null;
+    /**
+    * A database directory name.
+    */
+    public static String m_DbDir;
     /**
      * Creates new form dlgEnrolamiento
      */
-    public dlgEnrolamiento(java.awt.Frame parent, boolean modal) {
+    public dlgEnrolamiento(JDialog parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        // Get database folder
+        try
+        {
+            m_DbDir = GetDatabaseDir();
+        }
+        catch( Exception e )
+        {
+            JOptionPane.showMessageDialog(null,
+                                          "Initialization failed. Application will be close.\nError description: " + e.getMessage(),
+                                          getTitle(), JOptionPane.ERROR_MESSAGE);
+            System.exit( 0 );
+        }
         ec = new EmpleadoControlador();
         tc = new TemplateControlador();
         pc = new ProveedorControlador();
@@ -68,6 +106,7 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel5 = new javax.swing.JPanel();
         lblLogo = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
@@ -90,13 +129,17 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         cboSede = new javax.swing.JComboBox<>();
         cboProveedor = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
-        lblHuella1 = new javax.swing.JLabel();
+        FingerImage = new javax.swing.JLabel();
         lblHuella2 = new javax.swing.JLabel();
         btnHuella1 = new javax.swing.JButton();
         btnHuella2 = new javax.swing.JButton();
+        LabelMessage = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+
+        buttonGroup1.add(radActivo);
+        buttonGroup1.add(radInactivo);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -126,23 +169,23 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         java.awt.GridBagLayout jPanel2Layout = new java.awt.GridBagLayout();
-        jPanel2Layout.columnWidths = new int[] {0, 8, 0, 8, 0};
-        jPanel2Layout.rowHeights = new int[] {0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0};
+        jPanel2Layout.columnWidths = new int[] {0, 8, 0, 8, 0, 8, 0, 8, 0};
+        jPanel2Layout.rowHeights = new int[] {0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0};
         jPanel2.setLayout(jPanel2Layout);
 
         lblDni.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         lblDni.setForeground(new java.awt.Color(27, 54, 93));
         lblDni.setText("DNI");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblDni, gridBagConstraints);
 
         txtDni.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(txtDni, gridBagConstraints);
@@ -151,15 +194,15 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         lblNombres.setForeground(new java.awt.Color(27, 54, 93));
         lblNombres.setText("Nombres");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblNombres, gridBagConstraints);
 
         txtNombres.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(txtNombres, gridBagConstraints);
@@ -168,15 +211,15 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         lblApellidos.setForeground(new java.awt.Color(27, 54, 93));
         lblApellidos.setText("Apellidos");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblApellidos, gridBagConstraints);
 
         txtApellidos.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(txtApellidos, gridBagConstraints);
@@ -185,8 +228,8 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         lblEstado.setForeground(new java.awt.Color(27, 54, 93));
         lblEstado.setText("Estado");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblEstado, gridBagConstraints);
 
@@ -194,8 +237,8 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         lblCodigo.setForeground(new java.awt.Color(27, 54, 93));
         lblCodigo.setText("Codigo");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblCodigo, gridBagConstraints);
 
@@ -203,22 +246,22 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         radActivo.setForeground(new java.awt.Color(27, 54, 93));
         radActivo.setText("Activo");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 8;
         jPanel2.add(radActivo, gridBagConstraints);
 
         radInactivo.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         radInactivo.setForeground(new java.awt.Color(27, 54, 93));
         radInactivo.setText("Inactivo");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridy = 8;
         jPanel2.add(radInactivo, gridBagConstraints);
 
         txtCodigo.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(txtCodigo, gridBagConstraints);
@@ -226,9 +269,14 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         radTercero.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         radTercero.setForeground(new java.awt.Color(27, 54, 93));
         radTercero.setText("Tercero?");
+        radTercero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radTerceroActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(radTercero, gridBagConstraints);
@@ -237,8 +285,8 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         lblSede.setForeground(new java.awt.Color(27, 54, 93));
         lblSede.setText("Sede");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 14;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblSede, gridBagConstraints);
 
@@ -246,16 +294,16 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         lblProveedor.setForeground(new java.awt.Color(27, 54, 93));
         lblProveedor.setText("Proveedor");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 14;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 16;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblProveedor, gridBagConstraints);
 
         cboSede.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         cboSede.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 14;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(cboSede, gridBagConstraints);
@@ -263,56 +311,70 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         cboProveedor.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         cboProveedor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 14;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 16;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(cboProveedor, gridBagConstraints);
 
-        lblHuella1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        FingerImage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lblHuella2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         btnHuella1.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         btnHuella1.setForeground(new java.awt.Color(27, 54, 93));
         btnHuella1.setText("Huella 1");
+        btnHuella1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHuella1ActionPerformed(evt);
+            }
+        });
 
         btnHuella2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         btnHuella2.setForeground(new java.awt.Color(27, 54, 93));
         btnHuella2.setText("Huella 2");
+        btnHuella2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHuella2ActionPerformed(evt);
+            }
+        });
+
+        LabelMessage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnHuella1)
-                    .addComponent(btnHuella2))
-                .addGap(18, 18, 18)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblHuella1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblHuella2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnHuella1)
+                            .addComponent(btnHuella2))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblHuella2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblHuella1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(btnHuella1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                    .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnHuella1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblHuella2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnHuella2)
-                        .addGap(46, 46, 46)))
-                .addGap(22, 22, 22))
+                    .addComponent(btnHuella2))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -330,10 +392,9 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(20, 20, 20))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -359,6 +420,11 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         btnCancelar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         btnCancelar.setForeground(new java.awt.Color(27, 54, 93));
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
         jPanel4.add(btnCancelar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -375,7 +441,7 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -383,56 +449,472 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
+        String estado = null;
+        if(radActivo.isSelected()){
+            estado = "Activo";
+        }else{
+            estado = "Inactivo";
+        }
         
+        Empleado nuevo = new Empleado();
+        nuevo.setDni(txtDni.getText());
+        nuevo.setApellidos(txtApellidos.getText());
+        nuevo.setNombres(txtNombres.getText());
+        nuevo.setEstado(estado);
+        nuevo.setCodigo(txtCodigo.getText());
+        nuevo.setFechaMovimiento(null);
+        
+        ec.setSeleccionado(nuevo);
+        
+        ec.accion(Controlador.NUEVO);
+        this.dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
+    private void btnHuella1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuella1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            if (txtDni.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "Ingrese dni",
+                    getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String szUserName = txtDni.getText();
+            String strAnsiFileName = szUserName+".ansi";
+            if( (isUserExists( strAnsiFileName ) ) )
+            {
+                System.out.println("Existe");
+                int nResponse;
+                nResponse = JOptionPane.showConfirmDialog( this,
+                                                           "User already exists. Do you want replace it?",
+                                                           getTitle(), 
+                                                           JOptionPane.YES_NO_OPTION,
+                                                           JOptionPane.QUESTION_MESSAGE );
+                if( nResponse == JOptionPane.NO_OPTION )
+                    return;
+            } else {
+                System.out.println("No existe");
+                CreateFile( szUserName );
+            }
+            //EnableControls(false);
+            mOperationThread1 = new CreateThread((byte)0,true,false,szUserName );
+            System.out.println("name "+szUserName);
+            mOperationThread1.start();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                                          "Can not start enrollment operation.\nError description: " + e.getMessage(),
+                                          getTitle(), JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnHuella1ActionPerformed
+
+    private void btnHuella2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuella2ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnHuella2ActionPerformed
+
+    private void radTerceroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radTerceroActionPerformed
+        // TODO add your handling code here:
+        if(cboProveedor.isEnabled()){
+            cboProveedor.setEnabled(false);
+        }else{
+            cboProveedor.setEnabled(true);
+        }
+        
+    }//GEN-LAST:event_radTerceroActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void CreateFile( String szFileName )
+        throws Exception
+    {
+        File f = new File( m_DbDir, szFileName );
+        try
+        {
+            System.out.println("Llega aca a guardar file");
+            f.createNewFile();
+            f.delete();
+        }
+        catch( IOException e )
+        {
+            throw new Exception( "Can not create file " + szFileName + " in database." );
+        }
+        catch( SecurityException e )
+        {
+            throw new Exception( "Can not create file " + szFileName + " in database. Access denied" );
+        }
+        System.out.println("PATH DATA: "+m_DbDir);
+    }
+    
+    private boolean isUserExists( String szUserName )
+    {
+        File f = new File( m_DbDir, szUserName );
+        return f.exists();
+    }
+    /**
+     * Get the database directory.
+     *
+     * @return the database directory.
+     */
+    static private String GetDatabaseDir() throws Exception
+    {
+        String szDbDir;
+        File f = new File( "Database" );
+        if( f.exists() )
+        {
+            if( !f.isDirectory() )
+                throw new Exception( "Can not create database directory " + f.getAbsolutePath() + 
+                        ". File with the same name already exist." );
+        } else {
+            try
+            {
+                f.mkdir();
+            }
+            catch( SecurityException e )
+            {
+                throw new Exception( "Can not create database directory " + f.getAbsolutePath() +
+                        ". Access denied.");
+            }
+        }
+        szDbDir = f.getAbsolutePath();
+
+        return szDbDir;
+    }
+    
+    private class CreateThread extends OperationThread 
+    {
+        private AnsiSDKLib ansi_lib = null;
+        private byte mFinger = 0;
+        private boolean mSaveAnsi = true;
+        private boolean mSaveIso = false;
+        private String mTmplName = "";
+
+        public CreateThread(byte finger,boolean saveAnsi,boolean saveIso,String tmplName)
+        {
+            ansi_lib = new AnsiSDKLib();
+            mFinger = finger;
+            mSaveAnsi = saveAnsi;
+            mSaveIso = saveIso;
+            mTmplName = tmplName;
+        }
+
+        @Override
+        public void run()
+        {
+            boolean dev_open = false;
+            try
+            {
+                if(!ansi_lib.OpenDevice())
+                {
+                    LabelMessage.setText(ansi_lib.GetErrorMessage());
+                    //EnableControls(true);
+                    return;
+                }
+                dev_open = true;
+                if(!ansi_lib.FillImageSize())
+                {
+                    LabelMessage.setText(ansi_lib.GetErrorMessage());
+                    //EnableControls(true);
+                    return;
+                }
+                LabelMessage.setText("Please put finger...");
+                byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
+                for(;;)
+                {
+                    if( IsCanceled() )
+                    {
+                        break;
+                    }
+                    int tmplSize = ansi_lib.GetMaxTemplateSize();
+                    byte[] template = new byte[tmplSize];
+                    byte[] templateIso = new byte[tmplSize];
+                    int[] realSize = new int[1];
+                    int[] realIsoSize = new int[1];
+                    if(ansi_lib.CreateTemplate(mFinger,img_buffer,template,realSize))
+                    {
+                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY );
+                        DataBuffer db1 = m_hImage.getRaster().getDataBuffer();
+                        for( int i = 0; i < db1.getSize(); i++ )
+                        {
+                            db1.setElem( i, img_buffer[i] );
+                        }
+                        m_FingerPrintImage.setImage( m_hImage );
+                        FingerImage.repaint();
+                        LabelMessage.setText("Create template done.");
+                        if(mSaveAnsi)
+                        {
+                            SaveTemplate(mTmplName + ".ansi", template, realSize[0]);
+                        }
+                        if(mSaveIso)
+                        {
+                            realIsoSize[0] = tmplSize;
+                            if(ansi_lib.ConvertAnsiTemplateToIso(template, templateIso, realIsoSize))
+                            {
+                                SaveTemplate(mTmplName + ".iso", templateIso, realIsoSize[0]);
+                            }
+                            else
+                            {
+                                String error = String.format("Conver to failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                                LabelMessage.setText(error);
+                            }
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        int lastError = ansi_lib.GetErrorCode();
+                        if(lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME || 
+                            lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME ||
+                            lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER )
+                        {
+                            Thread.sleep(100);
+                            continue;
+                        }
+                        else
+                        {
+                            String error = String.format("Create failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                            LabelMessage.setText(error);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                LabelMessage.setText(e.getMessage());
+                //EnableControls(true);
+            }
+            if(dev_open)
+            {
+                ansi_lib.CloseDevice();
+            }
+            //EnableControls(true);
+        }
+
+        private void SaveTemplate(String name, byte[] template, int size)
+        {
+            FileOutputStream fs = null;
+            File f = null;
+            try
+            {
+                System.out.println("Llega a savetemplate");
+                f = new File( m_DbDir + "//" + name );
+                fs = new FileOutputStream( f ); 
+                byte[] writeTemplate = new byte[size];
+                System.arraycopy(template, 0, writeTemplate, 0, size);
+                fs.write(writeTemplate);
+                fs.close();
+            }
+            catch(Exception e)
+            {
+                String error = String.format("Failed to save template to file %s. Error: %s.", name, e.toString());   
+                LabelMessage.setText(error);
+            }
+        }
+    }
+    
+    private class CreateThread2 extends OperationThread 
+    {
+        private AnsiSDKLib ansi_lib = null;
+        private byte mFinger = 0;
+        private boolean mSaveAnsi = true;
+        private boolean mSaveIso = false;
+        private String mTmplName = "";
+
+        public CreateThread2(byte finger,boolean saveAnsi,boolean saveIso,String tmplName)
+        {
+            ansi_lib = new AnsiSDKLib();
+            mFinger = finger;
+            mSaveAnsi = saveAnsi;
+            mSaveIso = saveIso;
+            mTmplName = tmplName;
+        }
+
+        @Override
+        public void run()
+        {
+            boolean dev_open = false;
+            try
+            {
+                if(!ansi_lib.OpenDevice())
+                {
+                    LabelMessage.setText(ansi_lib.GetErrorMessage());
+                    //EnableControls(true);
+                    return;
+                }
+                dev_open = true;
+                if(!ansi_lib.FillImageSize())
+                {
+                    LabelMessage.setText(ansi_lib.GetErrorMessage());
+                    //EnableControls(true);
+                    return;
+                }
+                LabelMessage.setText("Please put finger...");
+                byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
+                for(;;)
+                {
+                    if( IsCanceled() )
+                    {
+                        break;
+                    }
+                    int tmplSize = ansi_lib.GetMaxTemplateSize();
+                    byte[] template = new byte[tmplSize];
+                    byte[] templateIso = new byte[tmplSize];
+                    int[] realSize = new int[1];
+                    int[] realIsoSize = new int[1];
+                    if(ansi_lib.CreateTemplate(mFinger,img_buffer,template,realSize))
+                    {
+                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY );
+                        DataBuffer db1 = m_hImage.getRaster().getDataBuffer();
+                        for( int i = 0; i < db1.getSize(); i++ )
+                        {
+                            db1.setElem( i, img_buffer[i] );
+                        }
+                        m_FingerPrintImage1.setImage( m_hImage );
+                        lblHuella2.repaint();
+                        LabelMessage.setText("Create template done.");
+                        if(mSaveAnsi)
+                        {
+                            SaveTemplate(mTmplName + ".ansi", template, realSize[0]);
+                        }
+                        if(mSaveIso)
+                        {
+                            realIsoSize[0] = tmplSize;
+                            if(ansi_lib.ConvertAnsiTemplateToIso(template, templateIso, realIsoSize))
+                            {
+                                SaveTemplate(mTmplName + ".iso", templateIso, realIsoSize[0]);
+                            }
+                            else
+                            {
+                                String error = String.format("Conver to failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                                LabelMessage.setText(error);
+                            }
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        int lastError = ansi_lib.GetErrorCode();
+                        if(lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME || 
+                            lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME ||
+                            lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER )
+                        {
+                            Thread.sleep(100);
+                            continue;
+                        }
+                        else
+                        {
+                            String error = String.format("Create failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                            LabelMessage.setText(error);
+                            break;
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                LabelMessage.setText(e.getMessage());
+                //EnableControls(true);
+            }
+            if(dev_open)
+            {
+                ansi_lib.CloseDevice();
+            }
+            //EnableControls(true);
+        }
+
+        private void SaveTemplate(String name, byte[] template, int size)
+        {
+            FileOutputStream fs = null;
+            File f = null;
+            try
+            {
+                f = new File( m_DbDir + "//" + name );
+                fs = new FileOutputStream( f ); 
+                byte[] writeTemplate = new byte[size];
+                System.arraycopy(template, 0, writeTemplate, 0, size);
+                fs.write(writeTemplate);
+                fs.close();
+                LabelMessage.setText("Se guardo");
+            }
+            catch(Exception e)
+            {
+                String error = String.format("Failed to save template to file %s. Error: %s.", name, e.toString());   
+                LabelMessage.setText(error);
+            }
+        }
+    }
+    private  class MyIcon implements  Icon
+    {
+        public MyIcon()
+        {
+            m_Image = null;
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y)
+        {
+            if( m_Image != null )
+                g.drawImage( m_Image, x, y, getIconWidth(), getIconHeight(), null );
+            else
+                g.fillRect( x, y, getIconWidth(), getIconHeight() );
+        }
+
+        @Override
+        public int getIconWidth()
+        {
+            return 88;
+        }
+
+        @Override
+        public int getIconHeight()
+        {
+            return 98;
+        }
+
+        public boolean LoadImage( String path )
+        {
+            boolean bRetCode = false;
+            Image newImg;
+            try
+            {
+                File f = new File( path );
+                newImg = ImageIO.read( f );
+                bRetCode = true;
+                setImage( newImg );
+            }
+            catch( IOException e )
+            {
+            }
+
+            return bRetCode;
+        }
+
+        public void setImage( Image Img )
+        {
+            if( Img != null )
+                m_Image = Img.getScaledInstance( getIconWidth(), getIconHeight(), Image.SCALE_FAST);
+            else
+                m_Image = null;
+        }
+
+        private Image m_Image;
+    }
     /**
      * @param args the commatxtDni arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(dlgEnrolamiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(dlgEnrolamiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(dlgEnrolamiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(dlgEnrolamiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                dlgEnrolamiento dialog = new dlgEnrolamiento(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel FingerImage;
+    private javax.swing.JLabel LabelMessage;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnHuella1;
     private javax.swing.JButton btnHuella2;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cboProveedor;
     private javax.swing.JComboBox<String> cboSede;
     private javax.swing.JPanel jPanel1;
@@ -444,7 +926,6 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
     private javax.swing.JLabel lblCodigo;
     private javax.swing.JLabel lblDni;
     private javax.swing.JLabel lblEstado;
-    private javax.swing.JLabel lblHuella1;
     private javax.swing.JLabel lblHuella2;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblNombres;
