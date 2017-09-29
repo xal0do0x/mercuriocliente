@@ -1,5 +1,7 @@
 odoo:
     url: 'http://localhost:8069'
     database: 'mercurio1'
+servidor:
+    url: 'http://localhost:8090'
 
     
