@@ -671,10 +671,8 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                             Empleado empleado = empleadoControlador.buscarPorDNI(txtDni.getText());
                             Marcacion marcacion = new Marcacion();
                             Equipo equipo = new Equipo();
-                            equipo.setCodigo("SEDCHICLAYO");
-                            equipo.setDireccionIp("192.168.0.27");
-                            equipo.setDireccionMac("40:8d:5c:b1:95:94");
-                            equipo.setNombre("CHICLAYO");
+                            equipo.setId(1101L);
+                            empleado.setId(1051L);
                             marcacion.setEmpleado(empleado);
                             marcacion.setEquipo(equipo);
                             marcacion.setEnviado(false);
