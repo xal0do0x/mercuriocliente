@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -34,22 +35,21 @@ import javax.swing.JOptionPane;
  * @author Aldo
  */
 public class dlgMarcaciones extends javax.swing.JDialog {
-    
+
     private OperationThread mOperationThread = null;
-    private float[] mMatchScoreValue = new float[6]; 
+    private float[] mMatchScoreValue = new float[6];
     private String mNewTmplName = null;
-    public MyIcon  m_FingerPrintImage;
+    public MyIcon m_FingerPrintImage;
     public BufferedImage m_hImage;
     /**
-    * database directory name.
-    */
+     * database directory name.
+     */
     public static String m_DbDir;
     //Reloj
-    private final SimpleDateFormat sdf  = new SimpleDateFormat("HH:mm");
-    private final SimpleDateFormat sdfDate  = new SimpleDateFormat("dd/MM/yyyy");
-    private int   currentSecond;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    private final SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yyyy");
+    private int currentSecond;
     private Calendar calendar;
-    
 
     /**
      * Creates new form dlgMarcaciones
@@ -64,19 +64,18 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         mMatchScoreValue[4] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_HIGH;
         mMatchScoreValue[5] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_VERY_HIGH;
         // Get database folder
-        try
-        {
+        try {
             m_DbDir = GetDatabaseDir();
-        }
-        catch( Exception e )
-        {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
-                                          "Initialization failed. Application will be close.\nError description: " + e.getMessage(),
-                                          getTitle(), JOptionPane.ERROR_MESSAGE);
-            System.exit( 0 );
+                    "Initialization failed. Application will be close.\nError description: " + e.getMessage(),
+                    getTitle(), JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
         m_FingerPrintImage = new MyIcon();
+        
         FingerImage.setIcon(m_FingerPrintImage);
+        imagenInicial();
         /**
          * Reloj
          */
@@ -94,101 +93,63 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel1 = new javax.swing.JPanel();
         lblLogo = new javax.swing.JLabel();
         lblNombreSis = new javax.swing.JLabel();
-        pnlBoton = new javax.swing.JPanel();
-        pnlDatos = new javax.swing.JPanel();
-        pnlDni = new javax.swing.JPanel();
-        lblDni = new javax.swing.JLabel();
-        txtDni = new javax.swing.JTextField();
-        FingerImage = new javax.swing.JLabel();
-        btnMarcar = new javax.swing.JButton();
-        LabelMessage = new javax.swing.JLabel();
         btnMarcaciones = new javax.swing.JButton();
         btnEnrolar = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
-        jSeparator2 = new javax.swing.JSeparator();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        LabelMessage = new javax.swing.JLabel();
         pnlHoraFecha = new javax.swing.JPanel();
         lblHora = new javax.swing.JLabel();
         lblFecha = new javax.swing.JLabel();
         txtHora = new javax.swing.JLabel();
         txtFecha = new javax.swing.JLabel();
+        pnlDni = new javax.swing.JPanel();
+        lblDni = new javax.swing.JLabel();
+        txtDni = new javax.swing.JTextField();
+        btnMarcar = new javax.swing.JButton();
+        FingerImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/nuevo_logo_hermes.jpg"))); // NOI18N
 
         lblNombreSis.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         lblNombreSis.setForeground(new java.awt.Color(27, 54, 93));
+        lblNombreSis.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNombreSis.setText("SISTEMA DE ASISTENCIA EN CENTROS");
-
-        java.awt.GridBagLayout pnlDniLayout1 = new java.awt.GridBagLayout();
-        pnlDniLayout1.columnWidths = new int[] {0, 8, 0};
-        pnlDniLayout1.rowHeights = new int[] {0};
-        pnlDni.setLayout(pnlDniLayout1);
-
-        lblDni.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        lblDni.setForeground(new java.awt.Color(27, 54, 93));
-        lblDni.setText("Dni");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        pnlDni.add(lblDni, gridBagConstraints);
-
-        txtDni.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        txtDni.setForeground(new java.awt.Color(28, 33, 37));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 0.1;
-        pnlDni.add(txtDni, gridBagConstraints);
-
-        javax.swing.GroupLayout pnlDatosLayout = new javax.swing.GroupLayout(pnlDatos);
-        pnlDatos.setLayout(pnlDatosLayout);
-        pnlDatosLayout.setHorizontalGroup(
-            pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDatosLayout.createSequentialGroup()
-                .addComponent(pnlDni, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlDatosLayout.setVerticalGroup(
-            pnlDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlDni, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
-        FingerImage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        btnMarcar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        btnMarcar.setForeground(new java.awt.Color(27, 54, 93));
-        btnMarcar.setText("MARCAR");
-        btnMarcar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMarcarActionPerformed(evt);
-            }
-        });
-
-        LabelMessage.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        LabelMessage.setForeground(new java.awt.Color(28, 33, 37));
-        LabelMessage.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         btnMarcaciones.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         btnMarcaciones.setForeground(new java.awt.Color(28, 33, 37));
         btnMarcaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searcher16x16.png"))); // NOI18N
         btnMarcaciones.setText("Marcaciones");
+        btnMarcaciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMarcacionesActionPerformed(evt);
+            }
+        });
 
         btnEnrolar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         btnEnrolar.setForeground(new java.awt.Color(28, 33, 37));
         btnEnrolar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/add16x16.png"))); // NOI18N
         btnEnrolar.setText("Enrolar");
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        LabelMessage.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        LabelMessage.setForeground(new java.awt.Color(153, 0, 0));
+
+        pnlHoraFecha.setBackground(new java.awt.Color(255, 255, 255));
         java.awt.GridBagLayout pnlHoraFechaLayout = new java.awt.GridBagLayout();
         pnlHoraFechaLayout.columnWidths = new int[] {0, 8, 0};
         pnlHoraFechaLayout.rowHeights = new int[] {0, 8, 0};
         pnlHoraFecha.setLayout(pnlHoraFechaLayout);
 
-        lblHora.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        lblHora.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         lblHora.setForeground(new java.awt.Color(27, 54, 93));
         lblHora.setText("Hora");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -197,7 +158,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         pnlHoraFecha.add(lblHora, gridBagConstraints);
 
-        lblFecha.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        lblFecha.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         lblFecha.setForeground(new java.awt.Color(27, 54, 93));
         lblFecha.setText("Fecha");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -223,77 +184,128 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         pnlHoraFecha.add(txtFecha, gridBagConstraints);
 
+        pnlDni.setBackground(new java.awt.Color(255, 255, 255));
+        java.awt.GridBagLayout pnlDniLayout1 = new java.awt.GridBagLayout();
+        pnlDniLayout1.columnWidths = new int[] {0, 8, 0};
+        pnlDniLayout1.rowHeights = new int[] {0};
+        pnlDni.setLayout(pnlDniLayout1);
+
+        lblDni.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        lblDni.setForeground(new java.awt.Color(27, 54, 93));
+        lblDni.setText("DNI");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDni.add(lblDni, gridBagConstraints);
+
+        txtDni.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        txtDni.setForeground(new java.awt.Color(28, 33, 37));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.1;
+        pnlDni.add(txtDni, gridBagConstraints);
+
+        btnMarcar.setBackground(new java.awt.Color(255, 255, 255));
+        btnMarcar.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        btnMarcar.setForeground(new java.awt.Color(0, 0, 102));
+        btnMarcar.setText("MARCAR");
+        btnMarcar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMarcarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(LabelMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(178, 178, 178))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(pnlHoraFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 54, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(pnlDni, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnMarcar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlHoraFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlDni, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnMarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("", jPanel2);
+
+        FingerImage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblNombreSis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnMarcaciones)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnEnrolar)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(lblLogo)
+                .addGap(1, 1, 1)
+                .addComponent(lblNombreSis)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnMarcaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                    .addComponent(btnEnrolar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblLogo))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnMarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(54, 54, 54)
-                        .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(pnlBoton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addComponent(lblNombreSis))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnMarcaciones)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnEnrolar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(49, 49, 49)
-                                .addComponent(pnlHoraFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addComponent(jSeparator2)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(103, 103, 103)
-                .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblLogo)
-                .addGap(20, 20, 20)
-                .addComponent(lblNombreSis)
-                .addGap(8, 8, 8)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlHoraFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addComponent(LabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pnlBoton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(FingerImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(btnMarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnMarcaciones)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnEnrolar)
-                        .addContainerGap())))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -301,66 +313,74 @@ public class dlgMarcaciones extends javax.swing.JDialog {
 
     private void btnMarcarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarcarActionPerformed
         // TODO add your handling code here
-        if( txtDni.getText().isEmpty() )
-        {
+        if (txtDni.getText().isEmpty()) {
             System.out.println("Entra aca");
             JOptionPane.showMessageDialog(this,
-                                          "Ingrese dni",
-                                          getTitle(), JOptionPane.ERROR_MESSAGE);
+                "Ingrese dni",
+                getTitle(), JOptionPane.ERROR_MESSAGE);
             return;
         }
-        String dniANSI = txtDni.getText()+".ansi";
-        String dniISO = txtDni.getText()+".iso";
-        
+        String dniANSI = txtDni.getText() + ".ansi";
+        String dniISO = txtDni.getText() + ".iso";
+
         String tmplName = null;
         byte[] templateContent = null;
         FileInputStream fs = null;
         File f = null;
-        if(!(new File(m_DbDir+"//"+dniANSI)).exists() || !(new File(m_DbDir+"//"+dniANSI)).canRead()){
-            if(!(new File(m_DbDir+"//"+dniISO)).exists() || !(new File(m_DbDir+"//"+dniISO)).canRead()){
+        if (!(new File(m_DbDir + "//" + dniANSI)).exists() || !(new File(m_DbDir + "//" + dniANSI)).canRead()) {
+            if (!(new File(m_DbDir + "//" + dniISO)).exists() || !(new File(m_DbDir + "//" + dniISO)).canRead()) {
                 JOptionPane.showMessageDialog(this,
-                                          "Ingrese dni registrado",
-                                          getTitle(), JOptionPane.ERROR_MESSAGE);
-            return;
-            }else{
+                    "Ingrese dni registrado",
+                    getTitle(), JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
                 tmplName = dniISO;
-                            System.out.println("Nomber ansi: "+tmplName);
+                System.out.println("Nomber ansi: " + tmplName);
 
             }
-        }else{
+        } else {
             tmplName = dniANSI;
-            System.out.println("Nomber ansi: "+tmplName);
+            System.out.println("Nomber ansi: " + tmplName);
         }
-        
-        try
-        {
-            f = new File( m_DbDir + "//" + tmplName );
-            if( !f.exists() || !f.canRead() )
+
+        try {
+            f = new File(m_DbDir + "//" + tmplName);
+            if (!f.exists() || !f.canRead()) {
                 throw new FileNotFoundException();
-	        
+            }
+
             long nFileSize = f.length();
-            fs = new FileInputStream( f );           
-            byte[] fileContent = new byte[(int)nFileSize];
-            fs.read( fileContent );
+            fs = new FileInputStream(f);
+            byte[] fileContent = new byte[(int) nFileSize];
+            fs.read(fileContent);
             fs.close();
-           
+
             templateContent = fileContent;
-        }
-        catch( Exception e)
-        {
-            String error = String.format("Failed to load template from file %s. Error: %s.", tmplName, e.toString());   
+        } catch (Exception e) {
+            String error = String.format("Failed to load template from file %s. Error: %s.", tmplName, e.toString());
             LabelMessage.setText(error);
         }
 
-        if(templateContent!=null)
-        {
+        if (templateContent != null) {
             EnableControls(false);
-            mOperationThread = new VerifyThread( (byte)0,templateContent,mMatchScoreValue[2]);
+            mOperationThread = new VerifyThread((byte) 0, templateContent, mMatchScoreValue[2]);
             mOperationThread.start();
         }
-        EnableControls(false);       
+        EnableControls(false);
     }//GEN-LAST:event_btnMarcarActionPerformed
 
+    private void btnMarcacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarcacionesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnMarcacionesActionPerformed
+
+    private void imagenInicial(){
+        try {
+            m_FingerPrintImage.setImage(ImageIO.read(getClass().getResource("/image/fingerprint.jpg")));
+            FingerImage.repaint();
+        } catch (IOException ex) {
+            Logger.getLogger(dlgMarcaciones.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -372,7 +392,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equalsIgnoreCase(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -403,7 +423,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         });
     }
 
-    private void EnableControls(boolean valor){
+    private void EnableControls(boolean valor) {
         txtDni.setEditable(valor);
         txtDni.setEnabled(valor);
     }
@@ -413,114 +433,95 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     private javax.swing.JButton btnEnrolar;
     private javax.swing.JButton btnMarcaciones;
     private javax.swing.JButton btnMarcar;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblDni;
     private javax.swing.JLabel lblFecha;
     private javax.swing.JLabel lblHora;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblNombreSis;
-    private javax.swing.JPanel pnlBoton;
-    private javax.swing.JPanel pnlDatos;
     private javax.swing.JPanel pnlDni;
     private javax.swing.JPanel pnlHoraFecha;
     private javax.swing.JTextField txtDni;
     private javax.swing.JLabel txtFecha;
     private javax.swing.JLabel txtHora;
     // End of variables declaration//GEN-END:variables
-    private class CaptureThread extends OperationThread 
-    {
+    private class CaptureThread extends OperationThread {
+
         private AnsiSDKLib ansi_lib = null;
-  
-        public CaptureThread()
-        {
+
+        public CaptureThread() {
             ansi_lib = new AnsiSDKLib();
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             boolean dev_open = false;
-            try
-            {
-                if(!ansi_lib.OpenDevice())
-                {
+            try {
+                if (!ansi_lib.OpenDevice()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
                 dev_open = true;
-                if(!ansi_lib.FillImageSize())
-                {
+                if (!ansi_lib.FillImageSize()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
                 byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
                 LabelMessage.setText("Por favor ponga su dedo...");
-                for(;;)
-                {
-                    if( IsCanceled() )
-                    {
+                for (;;) {
+                    if (IsCanceled()) {
                         LabelMessage.setText("Cancelado");
                         break;
                     }
-                    if(ansi_lib.CaptureImage(img_buffer))
-                    {
+                    if (ansi_lib.CaptureImage(img_buffer)) {
                         //mHandler.obtainMessage(MESSAGE_SHOW_MSG, -1, -1, op_info ).sendToTarget();
-                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY );
+                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY);
                         DataBuffer db1 = m_hImage.getRaster().getDataBuffer();
-                        for( int i = 0; i < db1.getSize(); i++ )
-                        {
-                            db1.setElem( i, img_buffer[i] );
+                        for (int i = 0; i < db1.getSize(); i++) {
+                            db1.setElem(i, img_buffer[i]);
                         }
-                        m_FingerPrintImage.setImage( m_hImage );
+                        m_FingerPrintImage.setImage(m_hImage);
                         FingerImage.repaint();
                         LabelMessage.setText("Captura realizada.");
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         int lastError = ansi_lib.GetErrorCode();
-                        if(lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME || 
-                            lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME ||
-                            lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER )
-                        {
+                        if (lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER) {
                             Thread.sleep(100);
                             continue;
-                        }
-                        else
-                        {
-                            String error = String.format("Falla en captura. Error: %s.",  ansi_lib.GetErrorMessage());   
+                        } else {
+                            String error = String.format("Falla en captura. Error: %s.", ansi_lib.GetErrorMessage());
                             LabelMessage.setText(error);
                             break;
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 LabelMessage.setText(e.getMessage());
                 EnableControls(true);
             }
-            if(dev_open)
-            {
+            if (dev_open) {
                 ansi_lib.CloseDevice();
             }
             EnableControls(true);
         }
     }
 
-        private class CreateThread extends OperationThread 
-    {
+    private class CreateThread extends OperationThread {
+
         private AnsiSDKLib ansi_lib = null;
         private byte mFinger = 0;
         private boolean mSaveAnsi = true;
         private boolean mSaveIso = false;
         private String mTmplName = "";
 
-        public CreateThread(byte finger,boolean saveAnsi,boolean saveIso,String tmplName)
-        {
+        public CreateThread(byte finger, boolean saveAnsi, boolean saveIso, String tmplName) {
             ansi_lib = new AnsiSDKLib();
             mFinger = finger;
             mSaveAnsi = saveAnsi;
@@ -529,30 +530,24 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             boolean dev_open = false;
-            try
-            {
-                if(!ansi_lib.OpenDevice())
-                {
+            try {
+                if (!ansi_lib.OpenDevice()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
                 dev_open = true;
-                if(!ansi_lib.FillImageSize())
-                {
+                if (!ansi_lib.FillImageSize()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
                 LabelMessage.setText("Please put finger...");
                 byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
-                for(;;)
-                {
-                    if( IsCanceled() )
-                    {
+                for (;;) {
+                    if (IsCanceled()) {
                         break;
                     }
                     int tmplSize = ansi_lib.GetMaxTemplateSize();
@@ -560,97 +555,77 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                     byte[] templateIso = new byte[tmplSize];
                     int[] realSize = new int[1];
                     int[] realIsoSize = new int[1];
-                    if(ansi_lib.CreateTemplate(mFinger,img_buffer,template,realSize))
-                    {
-                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY );
+                    if (ansi_lib.CreateTemplate(mFinger, img_buffer, template, realSize)) {
+                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY);
                         DataBuffer db1 = m_hImage.getRaster().getDataBuffer();
-                        for( int i = 0; i < db1.getSize(); i++ )
-                        {
-                            db1.setElem( i, img_buffer[i] );
+                        for (int i = 0; i < db1.getSize(); i++) {
+                            db1.setElem(i, img_buffer[i]);
                         }
-                        m_FingerPrintImage.setImage( m_hImage );
+                        m_FingerPrintImage.setImage(m_hImage);
                         FingerImage.repaint();
                         LabelMessage.setText("Create template done.");
-                        if(mSaveAnsi)
-                        {
+                        if (mSaveAnsi) {
                             SaveTemplate(mTmplName + ".ansi", template, realSize[0]);
                         }
-                        if(mSaveIso)
-                        {
+                        if (mSaveIso) {
                             realIsoSize[0] = tmplSize;
-                            if(ansi_lib.ConvertAnsiTemplateToIso(template, templateIso, realIsoSize))
-                            {
+                            if (ansi_lib.ConvertAnsiTemplateToIso(template, templateIso, realIsoSize)) {
                                 SaveTemplate(mTmplName + ".iso", templateIso, realIsoSize[0]);
-                            }
-                            else
-                            {
-                                String error = String.format("Conver to failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                            } else {
+                                String error = String.format("Conver to failed. Error: %s.", ansi_lib.GetErrorMessage());
                                 LabelMessage.setText(error);
                             }
                         }
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         int lastError = ansi_lib.GetErrorCode();
-                        if(lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME || 
-                            lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME ||
-                            lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER )
-                        {
+                        if (lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER) {
                             Thread.sleep(100);
                             continue;
-                        }
-                        else
-                        {
-                            String error = String.format("Create failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                        } else {
+                            String error = String.format("Create failed. Error: %s.", ansi_lib.GetErrorMessage());
                             LabelMessage.setText(error);
                             break;
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 LabelMessage.setText(e.getMessage());
                 EnableControls(true);
             }
-            if(dev_open)
-            {
+            if (dev_open) {
                 ansi_lib.CloseDevice();
             }
             EnableControls(true);
         }
 
-        private void SaveTemplate(String name, byte[] template, int size)
-        {
+        private void SaveTemplate(String name, byte[] template, int size) {
             FileOutputStream fs = null;
             File f = null;
-            try
-            {
-                f = new File( m_DbDir + "//" + name );
-                fs = new FileOutputStream( f ); 
+            try {
+                f = new File(m_DbDir + "//" + name);
+                fs = new FileOutputStream(f);
                 byte[] writeTemplate = new byte[size];
                 System.arraycopy(template, 0, writeTemplate, 0, size);
                 fs.write(writeTemplate);
                 fs.close();
-            }
-            catch(Exception e)
-            {
-                String error = String.format("Failed to save template to file %s. Error: %s.", name, e.toString());   
+            } catch (Exception e) {
+                String error = String.format("Failed to save template to file %s. Error: %s.", name, e.toString());
                 LabelMessage.setText(error);
             }
         }
     }
-    
-    private class VerifyThread extends OperationThread 
-    {
+
+    private class VerifyThread extends OperationThread {
+
         private AnsiSDKLib ansi_lib = null;
         private byte mFinger = 0;
         private byte[] mTmpl = null;
         private float mMatchScore = 0;
 
-        public VerifyThread(byte finger, byte[] template, float matchScore)
-        {
+        public VerifyThread(byte finger, byte[] template, float matchScore) {
             ansi_lib = new AnsiSDKLib();
             mFinger = finger;
             mTmpl = template;
@@ -658,191 +633,153 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             boolean dev_open = false;
-            try
-            {
-                if(!ansi_lib.OpenDevice())
-                {
+            try {
+                if (!ansi_lib.OpenDevice()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
                 dev_open = true;
-                if(!ansi_lib.FillImageSize())
-                {
+                if (!ansi_lib.FillImageSize()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
                 LabelMessage.setText("Por favor ponga su dedo...");
                 byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
-                for(;;)
-                {
-                    if( IsCanceled() )
-                    {
+                for (;;) {
+                    if (IsCanceled()) {
                         LabelMessage.setText("Cancelado");
                         break;
                     }
                     float[] matchResult = new float[1];
-                    if(ansi_lib.VerifyTemplate(mFinger,mTmpl,img_buffer,matchResult))
-                    {
-                        String op_info = String.format("Resultado : %s - %s.", txtDni.getText(), matchResult[0]>mMatchScore ? "OK" : "FALLO");                		
+                    if (ansi_lib.VerifyTemplate(mFinger, mTmpl, img_buffer, matchResult)) {
+                        String op_info = String.format("Resultado : %s - %s.", txtDni.getText(), matchResult[0] > mMatchScore ? "OK" : "FALLO");
                         LabelMessage.setText(op_info);
-                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY );
+                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY);
                         DataBuffer db1 = m_hImage.getRaster().getDataBuffer();
-                        for( int i = 0; i < db1.getSize(); i++ )
-                        {
-                            db1.setElem( i, img_buffer[i] );
+                        for (int i = 0; i < db1.getSize(); i++) {
+                            db1.setElem(i, img_buffer[i]);
                         }
-                        m_FingerPrintImage.setImage( m_hImage );
+                        m_FingerPrintImage.setImage(m_hImage);
                         FingerImage.repaint();
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         int lastError = ansi_lib.GetErrorCode();
-                        if(lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME || 
-                            lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME ||
-                            lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER )
-                        {
+                        if (lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER) {
                             Thread.sleep(100);
                             continue;
-                        }
-                        else
-                        {
-                            String error = String.format("Verify failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                        } else {
+                            String error = String.format("Verify failed. Error: %s.", ansi_lib.GetErrorMessage());
                             LabelMessage.setText(error);
                             break;
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 LabelMessage.setText(e.getMessage());
                 EnableControls(true);
             }
-            if(dev_open)
-            {
+            if (dev_open) {
                 ansi_lib.CloseDevice();
             }
             EnableControls(true);
             cleanItems();
         }
     }
-    
-    private class IdentifyThread extends OperationThread 
-    {
+
+    private class IdentifyThread extends OperationThread {
+
         private AnsiSDKLib ansi_lib = null;
         private byte mFinger = 0;
         private float mMatchScore = 0;
- 
-        public IdentifyThread(byte finger,float matchScore)
-        {
+
+        public IdentifyThread(byte finger, float matchScore) {
             ansi_lib = new AnsiSDKLib();
             mFinger = finger;
             mMatchScore = matchScore;
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             boolean dev_open = false;
-            try
-            {
-                if(!ansi_lib.OpenDevice())
-                {
+            try {
+                if (!ansi_lib.OpenDevice()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
                 dev_open = true;
-                if(!ansi_lib.FillImageSize())
-                {
+                if (!ansi_lib.FillImageSize()) {
                     LabelMessage.setText(ansi_lib.GetErrorMessage());
                     EnableControls(true);
                     return;
                 }
-                LabelMessage.setText("Please put finger...");
+                LabelMessage.setText("Coloque su dedo por favor...");
                 byte[] img_buffer = new byte[ansi_lib.GetImageSize()];
-                for(;;)
-                {
-                    if( IsCanceled() )
-                    {
-                        LabelMessage.setText("Cancelled.");
+                for (;;) {
+                    if (IsCanceled()) {
+                        LabelMessage.setText("Cancelado.");
                         break;
                     }
                     int tmplSize = ansi_lib.GetMaxTemplateSize();
                     byte[] templateBase = new byte[tmplSize];
                     int[] realSize = new int[1];
-                    if(ansi_lib.CreateTemplate(mFinger,img_buffer,templateBase,realSize))
-                    {
-                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY );
+                    if (ansi_lib.CreateTemplate(mFinger, img_buffer, templateBase, realSize)) {
+                        m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY);
                         DataBuffer db1 = m_hImage.getRaster().getDataBuffer();
-                        for( int i = 0; i < db1.getSize(); i++ )
-                        {
-                            db1.setElem( i, img_buffer[i] );
+                        for (int i = 0; i < db1.getSize(); i++) {
+                            db1.setElem(i, img_buffer[i]);
                         }
-                        m_FingerPrintImage.setImage( m_hImage );
+                        m_FingerPrintImage.setImage(m_hImage);
                         FingerImage.repaint();
                         // start matching templates
                         FindTemplate(templateBase);
                         //
                         break;
-                    }
-                    else
-                    {
+                    } else {
                         int lastError = ansi_lib.GetErrorCode();
-                        if(lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME || 
-                            lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME ||
-                            lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER )
-                        {
+                        if (lastError == AnsiSDKLib.FTR_ERROR_EMPTY_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_NO_FRAME
+                                || lastError == AnsiSDKLib.FTR_ERROR_MOVABLE_FINGER) {
                             Thread.sleep(100);
                             continue;
-                        }
-                        else
-                        {
-                            String error = String.format("Create failed. Error: %s.",  ansi_lib.GetErrorMessage());   
+                        } else {
+                            String error = String.format("Error al crear: %s.", ansi_lib.GetErrorMessage());
                             LabelMessage.setText(error);
                             break;
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 LabelMessage.setText(e.getMessage());
                 EnableControls(true);
             }
-            if(dev_open)
-            {
+            if (dev_open) {
                 ansi_lib.CloseDevice();
             }
             EnableControls(true);
         }
 
-        private void FindTemplate(byte[] baseTemplate)
-        {
+        private void FindTemplate(byte[] baseTemplate) {
             File DbDir;
             File[] files;
             // Read all records to identify
-            DbDir = new File( m_DbDir );
+            DbDir = new File(m_DbDir);
             files = DbDir.listFiles();
             float[] matchResult = new float[1];
-            boolean found = false; 
-            for( int iFiles = 0; iFiles < files.length; iFiles++)
-            {
+            boolean found = false;
+            for (int iFiles = 0; iFiles < files.length; iFiles++) {
                 File curFile = files[iFiles];
-                if( curFile.isFile() )
-                {
+                if (curFile.isFile()) {
                     byte[] template = ReadTemplate(curFile);
-                    if( template != null )
-                    {
-                        if(ansi_lib.MatchTemplates(baseTemplate, template, matchResult ) && matchResult[0] > mMatchScore)
-                        {
-                            String message = String.format("Template found. Name: %s(%d:%d). Score:%f", curFile.getName(),iFiles + 1,files.length, matchResult[0]);
+                    if (template != null) {
+                        if (ansi_lib.MatchTemplates(baseTemplate, template, matchResult) && matchResult[0] > mMatchScore) {
+                            String message = String.format("Huella encontrada. Nombre: %s(%d:%d). Score:%f", curFile.getName(), iFiles + 1, files.length, matchResult[0]);
                             LabelMessage.setText(message);
                             found = true;
                             break;
@@ -850,165 +787,144 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                     }
                 }
             }
-            if(!found)
-            {
+            if (!found) {
                 LabelMessage.setText("Template not found");
             }
         }
 
-        private byte[] ReadTemplate(File templateFile)
-        {
+        private byte[] ReadTemplate(File templateFile) {
             byte[] templateContent = null;
             FileInputStream fs = null;
-            try
-            {
+            try {
                 long nFileSize = templateFile.length();
-                fs = new FileInputStream( templateFile );
-                byte[] fileContent = new byte[(int)nFileSize];
-                fs.read( fileContent );
+                fs = new FileInputStream(templateFile);
+                byte[] fileContent = new byte[(int) nFileSize];
+                fs.read(fileContent);
                 fs.close();
                 templateContent = fileContent;
-            }
-            catch( Exception e )
-            {
+            } catch (Exception e) {
             }
             return templateContent;
         }
     }
-    
-    private boolean isUserExists( String szUserName )
-    {
-        File f = new File( m_DbDir, szUserName );
+
+    private boolean isUserExists(String szUserName) {
+        File f = new File(m_DbDir, szUserName);
         return f.exists();
     }
 
-    private void CreateFile( String szFileName )
-        throws Exception
-    {
-        File f = new File( m_DbDir, szFileName );
-        try
-        {
+    private void CreateFile(String szFileName)
+            throws Exception {
+        File f = new File(m_DbDir, szFileName);
+        try {
             f.createNewFile();
             f.delete();
-        }
-        catch( IOException e )
-        {
-            throw new Exception( "Can not create file " + szFileName + " in database." );
-        }
-        catch( SecurityException e )
-        {
-            throw new Exception( "Can not create file " + szFileName + " in database. Access denied" );
+        } catch (IOException e) {
+            throw new Exception("Can not create file " + szFileName + " in database.");
+        } catch (SecurityException e) {
+            throw new Exception("Can not create file " + szFileName + " in database. Access denied");
         }
     }
-    
-    private  class MyIcon implements  Icon
-    {
-        public MyIcon()
-        {
+
+    private class MyIcon implements Icon {
+
+        public MyIcon() {
             m_Image = null;
         }
 
         @Override
-        public void paintIcon(Component c, Graphics g, int x, int y)
-        {
-            if( m_Image != null )
-                g.drawImage( m_Image, x, y, getIconWidth(), getIconHeight(), null );
-            else
-                g.fillRect( x, y, getIconWidth(), getIconHeight() );
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            if (m_Image != null) {
+                g.drawImage(m_Image, x, y, getIconWidth(), getIconHeight(), null);
+            } else {
+                g.fillRect(x, y, getIconWidth(), getIconHeight());
+            }
         }
 
         @Override
-        public int getIconWidth()
-        {
+        public int getIconWidth() {
             return 148;
         }
 
         @Override
-        public int getIconHeight()
-        {
+        public int getIconHeight() {
             return 198;
         }
 
-        public boolean LoadImage( String path )
-        {
+        public boolean LoadImage(String path) {
             boolean bRetCode = false;
             Image newImg;
-            try
-            {
-                File f = new File( path );
-                newImg = ImageIO.read( f );
+            try {
+                File f = new File(path);
+                newImg = ImageIO.read(f);
                 bRetCode = true;
-                setImage( newImg );
-            }
-            catch( IOException e )
-            {
+                setImage(newImg);
+            } catch (IOException e) {
             }
 
             return bRetCode;
         }
 
-        public void setImage( Image Img )
-        {
-            if( Img != null )
-                m_Image = Img.getScaledInstance( getIconWidth(), getIconHeight(), Image.SCALE_FAST);
-            else
+        public void setImage(Image Img) {
+            if (Img != null) {
+                m_Image = Img.getScaledInstance(getIconWidth(), getIconHeight(), Image.SCALE_FAST);
+            } else {
                 m_Image = null;
+            }
         }
 
         private Image m_Image;
     }
+
     /**
      * Get the database directory.
      *
      * @return the database directory.
      */
-    static private String GetDatabaseDir() throws Exception
-    {
+    static private String GetDatabaseDir() throws Exception {
         String szDbDir;
-        File f = new File( "Database" );
-        if( f.exists() )
-        {
-            if( !f.isDirectory() )
-                throw new Exception( "Can not create database directory " + f.getAbsolutePath() + 
-                        ". File with the same name already exist." );
-        } else {
-            try
-            {
-                f.mkdir();
+        File f = new File("Database");
+        if (f.exists()) {
+            if (!f.isDirectory()) {
+                throw new Exception("Can not create database directory " + f.getAbsolutePath()
+                        + ". File with the same name already exist.");
             }
-            catch( SecurityException e )
-            {
-                throw new Exception( "Can not create database directory " + f.getAbsolutePath() +
-                        ". Access denied.");
+        } else {
+            try {
+                f.mkdir();
+            } catch (SecurityException e) {
+                throw new Exception("Can not create database directory " + f.getAbsolutePath()
+                        + ". Access denied.");
             }
         }
         szDbDir = f.getAbsolutePath();
 
         return szDbDir;
     }
-    
+
     /**
      * Reloj functions
      */
-    private void reset(){
+    private void reset() {
         calendar = Calendar.getInstance();
         currentSecond = calendar.get(Calendar.SECOND);
     }
-    public void start(){
+
+    public void start() {
         reset();
         ScheduledExecutorService worker = Executors.newScheduledThreadPool(3);
-         worker.scheduleAtFixedRate( new Runnable(){
-            public void run(){
-                if( currentSecond == 60 ) {
+        worker.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                if (currentSecond == 60) {
                     reset();
                 }
-                txtHora.setText( String.format("%s:%02d", sdf.format(calendar.getTime()), currentSecond));
+                txtHora.setText(String.format("%s:%02d", sdf.format(calendar.getTime()), currentSecond));
                 currentSecond++;
             }
-        }, 0, 1000 ,TimeUnit.MILLISECONDS );
+        }, 0, 1000, TimeUnit.MILLISECONDS);
     }
-    
-    private void cleanItems(){
+
+    private void cleanItems() {
         txtDni.setText("");
     }
 }

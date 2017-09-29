@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="mercurioPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <class>com.biosisperu.mercurio.siac.domain.Empleado</class>
+    <class>com.biosisperu.mercurio.siac.domain.Sede</class>
+    <class>com.biosisperu.mercurio.siac.domain.Marcacion</class>
+    <class>com.biosisperu.mercurio.siac.domain.EmpleadoTemplate</class>
+    <class>com.biosisperu.mercurio.siac.domain.Proveedor</class>
+    <class>com.biosisperu.mercurio.siac.domain.Equipo</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:./db"/>
+      <property name="javax.persistence.jdbc.user" value="admin"/>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="admin"/>
+    </properties>
+  </persistence-unit>
+</persistence>

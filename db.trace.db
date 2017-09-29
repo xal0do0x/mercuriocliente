@@ -1,0 +1,286 @@
+2017-09-29 09:55:51 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "CREATE TABLE EQUIPO
+(
+  ID BIGINT NOT NULL,
+  CODIGO VARCHAR(255) NOT NULL,
+  NOMBRE VARCHAR(255) NOT NULL,
+  DIRECCION_IP VARCHAR(255) NOT NULL,
+  DIRECCION_MAC VARCHAR(255) NOT NULL,
+  SEDE_ID BIGINT,
+  CONSTRAINT PK_EQUIPO PRIMARY KEY (ID),
+  CONSTRAINT FK_EQUIPO_SEDE_ID FOREIGN KEY (SEDE_ID)
+      REFERENCES SEDE (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; se esperaba "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"
+Syntax error in SQL statement "CREATE TABLE EQUIPO
+(
+  ID BIGINT NOT NULL,
+  CODIGO VARCHAR(255) NOT NULL,
+  NOMBRE VARCHAR(255) NOT NULL,
+  DIRECCION_IP VARCHAR(255) NOT NULL,
+  DIRECCION_MAC VARCHAR(255) NOT NULL,
+  SEDE_ID BIGINT,
+  CONSTRAINT PK_EQUIPO PRIMARY KEY (ID),
+  CONSTRAINT FK_EQUIPO_SEDE_ID FOREIGN KEY (SEDE_ID)
+      REFERENCES SEDE (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE equipo
+(
+  id bigint NOT NULL,
+  codigo varchar(255) NOT NULL,
+  nombre varchar(255) NOT NULL,
+  direccion_ip varchar(255) NOT NULL,
+  direccion_mac varchar(255) NOT NULL,
+  sede_id bigint,
+  CONSTRAINT pk_equipo PRIMARY KEY (id),
+  CONSTRAINT fk_equipo_sede_id FOREIGN KEY (sede_id)
+      REFERENCES sede (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) [42001-196]
+2017-09-29 09:55:51 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "CREATE TABLE EMPLEADO
+(
+  ID BIGINT NOT NULL,
+  DNI VARCHAR(255) NOT NULL,
+  NOMBRES VARCHAR(255) NOT NULL,
+  APELLIDOS VARCHAR(255),
+  ESTADO VARCHAR(255) NOT NULL,
+  CODIGO VARCHAR(255),
+  FECHA_MOVIMIENTO DATE,
+  IMAGEN BYTEA,
+  IMAGEN_CONTENT_TYPE VARCHAR(255),
+  TERCERO BOOLEAN,
+  PROVEEDOR_ID BIGINT,
+  CONSTRAINT PK_EMPLEADO PRIMARY KEY (ID),
+  CONSTRAINT FK_EMPLEADO_PROVEEDOR_ID FOREIGN KEY (PROVEEDOR_ID)
+      REFERENCES PROVEEDOR (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; se esperaba "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"
+Syntax error in SQL statement "CREATE TABLE EMPLEADO
+(
+  ID BIGINT NOT NULL,
+  DNI VARCHAR(255) NOT NULL,
+  NOMBRES VARCHAR(255) NOT NULL,
+  APELLIDOS VARCHAR(255),
+  ESTADO VARCHAR(255) NOT NULL,
+  CODIGO VARCHAR(255),
+  FECHA_MOVIMIENTO DATE,
+  IMAGEN BYTEA,
+  IMAGEN_CONTENT_TYPE VARCHAR(255),
+  TERCERO BOOLEAN,
+  PROVEEDOR_ID BIGINT,
+  CONSTRAINT PK_EMPLEADO PRIMARY KEY (ID),
+  CONSTRAINT FK_EMPLEADO_PROVEEDOR_ID FOREIGN KEY (PROVEEDOR_ID)
+      REFERENCES PROVEEDOR (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE empleado
+(
+  id bigint NOT NULL,
+  dni varchar(255) NOT NULL,
+  nombres varchar(255) NOT NULL,
+  apellidos varchar(255),
+  estado varchar(255) NOT NULL,
+  codigo varchar(255),
+  fecha_movimiento date,
+  imagen bytea,
+  imagen_content_type varchar(255),
+  tercero boolean,
+  proveedor_id bigint,
+  CONSTRAINT pk_empleado PRIMARY KEY (id),
+  CONSTRAINT fk_empleado_proveedor_id FOREIGN KEY (proveedor_id)
+      REFERENCES proveedor (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) [42001-196]
+2017-09-29 09:55:51 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "CREATE TABLE EMPLEADO_TEMPLATE
+(
+  ID BIGINT NOT NULL,
+  FORMATO VARCHAR(255) NOT NULL,
+  DEDO INTEGER,
+  PLANTILLA LONGBLOB,
+  TAMANIO INTEGER,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_EMPLEADO_TEMPLATE PRIMARY KEY (ID),
+  CONSTRAINT FK_EMPLEADO_TEMPLATE_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; se esperaba "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"
+Syntax error in SQL statement "CREATE TABLE EMPLEADO_TEMPLATE
+(
+  ID BIGINT NOT NULL,
+  FORMATO VARCHAR(255) NOT NULL,
+  DEDO INTEGER,
+  PLANTILLA LONGBLOB,
+  TAMANIO INTEGER,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_EMPLEADO_TEMPLATE PRIMARY KEY (ID),
+  CONSTRAINT FK_EMPLEADO_TEMPLATE_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE empleado_template
+(
+  id bigint NOT NULL,
+  formato varchar(255) NOT NULL,
+  dedo integer,
+  plantilla longblob,
+  tamanio integer,
+  empleado_id bigint,
+  CONSTRAINT pk_empleado_template PRIMARY KEY (id),
+  CONSTRAINT fk_empleado_template_empleado_id FOREIGN KEY (empleado_id)
+      REFERENCES empleado (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) [42001-196]
+2017-09-29 09:55:51 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "CREATE TABLE MARCACION
+(
+  ID BIGINT NOT NULL,
+  FECHA_HORA TIMESTAMP NOT NULL,
+  ENVIADO BOOLEAN NOT NULL,
+  EQUIPO_ID BIGINT,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_MARCACION PRIMARY KEY (ID),
+  CONSTRAINT FK_MARCACION_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT FK_MARCACION_EQUIPO_ID FOREIGN KEY (EQUIPO_ID)
+      REFERENCES EQUIPO (ID) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; se esperaba "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"
+Syntax error in SQL statement "CREATE TABLE MARCACION
+(
+  ID BIGINT NOT NULL,
+  FECHA_HORA TIMESTAMP NOT NULL,
+  ENVIADO BOOLEAN NOT NULL,
+  EQUIPO_ID BIGINT,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_MARCACION PRIMARY KEY (ID),
+  CONSTRAINT FK_MARCACION_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT FK_MARCACION_EQUIPO_ID FOREIGN KEY (EQUIPO_ID)
+      REFERENCES EQUIPO (ID) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE marcacion
+(
+  id bigint NOT NULL,
+  fecha_hora timestamp not null,
+  enviado boolean NOT NULL,
+  equipo_id bigint,
+  empleado_id bigint,
+  CONSTRAINT pk_marcacion PRIMARY KEY (id),
+  CONSTRAINT fk_marcacion_empleado_id FOREIGN KEY (empleado_id)
+      REFERENCES empleado (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_marcacion_equipo_id FOREIGN KEY (equipo_id)
+      REFERENCES equipo (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+) [42001-196]
+2017-09-29 09:56:53 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "CREATE TABLE MARCACION
+(
+  ID BIGINT NOT NULL,
+  FECHA_HORA TIMESTAMP NOT NULL,
+  ENVIADO BOOLEAN NOT NULL,
+  EQUIPO_ID BIGINT,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_MARCACION PRIMARY KEY (ID),
+  CONSTRAINT FK_MARCACION_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT FK_MARCACION_EQUIPO_ID FOREIGN KEY (EQUIPO_ID)
+      REFERENCES EQUIPO (ID)
+) "; se esperaba "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"
+Syntax error in SQL statement "CREATE TABLE MARCACION
+(
+  ID BIGINT NOT NULL,
+  FECHA_HORA TIMESTAMP NOT NULL,
+  ENVIADO BOOLEAN NOT NULL,
+  EQUIPO_ID BIGINT,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_MARCACION PRIMARY KEY (ID),
+  CONSTRAINT FK_MARCACION_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID) MATCH[*] SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT FK_MARCACION_EQUIPO_ID FOREIGN KEY (EQUIPO_ID)
+      REFERENCES EQUIPO (ID)
+) "; expected "INDEX, ON, NOT, DEFERRABLE, NOCHECK, CHECK, ,, )"; SQL statement:
+CREATE TABLE marcacion
+(
+  id bigint NOT NULL,
+  fecha_hora timestamp not null,
+  enviado boolean NOT NULL,
+  equipo_id bigint,
+  empleado_id bigint,
+  CONSTRAINT pk_marcacion PRIMARY KEY (id),
+  CONSTRAINT fk_marcacion_empleado_id FOREIGN KEY (empleado_id)
+      REFERENCES empleado (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_marcacion_equipo_id FOREIGN KEY (equipo_id)
+      REFERENCES equipo (id)
+) [42001-196]
+2017-09-29 10:00:39 jdbc[5]: null
+org.h2.message.DbException: La conexión no fue cerrada por la aplicación y esta siendo limpiada (garbage collected)
+The connection was not closed by the application and is garbage collected [90018-196]
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.jdbc.JdbcConnection.closeOld(JdbcConnection.java:185)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:127)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:100)
+	at org.h2.Driver.connect(Driver.java:69)
+	at org.netbeans.modules.db.explorer.DbDriverManager.getConnection(DbDriverManager.java:131)
+	at org.netbeans.modules.db.explorer.DatabaseConnection.doConnect(DatabaseConnection.java:923)
+	at org.netbeans.modules.db.explorer.DatabaseConnection.access$200(DatabaseConnection.java:103)
+	at org.netbeans.modules.db.explorer.DatabaseConnection$3.run(DatabaseConnection.java:988)
+	at org.openide.util.RequestProcessor$Task.run(RequestProcessor.java:1443)
+	at org.netbeans.modules.openide.util.GlobalLookup.execute(GlobalLookup.java:68)
+	at org.openide.util.lookup.Lookups.executeWith(Lookups.java:303)
+	at org.openide.util.RequestProcessor$Processor.run(RequestProcessor.java:2058)
+Caused by: org.h2.jdbc.JdbcSQLException: La conexión no fue cerrada por la aplicación y esta siendo limpiada (garbage collected)
+The connection was not closed by the application and is garbage collected [90018-196]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	... 15 more
+2017-09-29 10:15:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "CREATE TABLE MARCACION
+(
+  ID BIGINT NOT NULL AUTO_INCREMENT,
+  FECHA_HORA TIMESTAMP WITHOUT[*] TIME ZONE NOT NULL,
+  ENVIADO BOOLEAN NOT NULL,
+  EQUIPO_ID BIGINT,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_MARCACION PRIMARY KEY (ID),
+  CONSTRAINT FK_MARCACION_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID),
+  CONSTRAINT FK_MARCACION_EQUIPO_ID FOREIGN KEY (EQUIPO_ID)
+      REFERENCES EQUIPO (ID) 
+) "; se esperaba "WITH, (, FOR, UNSIGNED, INVISIBLE, VISIBLE, NOT, NULL, AS, DEFAULT, GENERATED, NOT, NULL, AUTO_INCREMENT, BIGSERIAL, SERIAL, IDENTITY, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, PRIMARY, UNIQUE, NOT, NULL, CHECK, REFERENCES, ,, )"
+Syntax error in SQL statement "CREATE TABLE MARCACION
+(
+  ID BIGINT NOT NULL AUTO_INCREMENT,
+  FECHA_HORA TIMESTAMP WITHOUT[*] TIME ZONE NOT NULL,
+  ENVIADO BOOLEAN NOT NULL,
+  EQUIPO_ID BIGINT,
+  EMPLEADO_ID BIGINT,
+  CONSTRAINT PK_MARCACION PRIMARY KEY (ID),
+  CONSTRAINT FK_MARCACION_EMPLEADO_ID FOREIGN KEY (EMPLEADO_ID)
+      REFERENCES EMPLEADO (ID),
+  CONSTRAINT FK_MARCACION_EQUIPO_ID FOREIGN KEY (EQUIPO_ID)
+      REFERENCES EQUIPO (ID) 
+) "; expected "WITH, (, FOR, UNSIGNED, INVISIBLE, VISIBLE, NOT, NULL, AS, DEFAULT, GENERATED, NOT, NULL, AUTO_INCREMENT, BIGSERIAL, SERIAL, IDENTITY, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, PRIMARY, UNIQUE, NOT, NULL, CHECK, REFERENCES, ,, )"; SQL statement:
+CREATE TABLE marcacion
+(
+  id bigint NOT NULL auto_increment,
+  fecha_hora timestamp without time zone NOT NULL,
+  enviado boolean NOT NULL,
+  equipo_id bigint,
+  empleado_id bigint,
+  CONSTRAINT pk_marcacion PRIMARY KEY (id),
+  CONSTRAINT fk_marcacion_empleado_id FOREIGN KEY (empleado_id)
+      REFERENCES empleado (id),
+  CONSTRAINT fk_marcacion_equipo_id FOREIGN KEY (equipo_id)
+      REFERENCES equipo (id) 
+) [42001-196]
