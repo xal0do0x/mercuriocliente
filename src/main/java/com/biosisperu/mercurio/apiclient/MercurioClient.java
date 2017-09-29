@@ -28,7 +28,7 @@ public class MercurioClient {
     private final RestTemplate REST_TEMPLATE;
     
     private final Map<URL_TIPO, String> URLS;
-    private final String URL_BASE = "http://localhost:8090/%s";
+    private final String URL_BASE = "http://54.69.245.214:8080/%s";
     
     private MercurioClient() {
         REST_TEMPLATE = new RestTemplate();
