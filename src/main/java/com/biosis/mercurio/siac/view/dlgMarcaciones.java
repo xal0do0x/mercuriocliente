@@ -5,8 +5,13 @@
  */
 package com.biosis.mercurio.siac.view;
 
+import com.biosis.mercurio.siac.controladores.EmpleadoControlador;
+import com.biosis.mercurio.siac.controladores.MarcacionControlador;
+import com.biosisperu.mercurio.apiclient.MercurioClient;
+import com.biosisperu.mercurio.siac.domain.Empleado;
+import com.biosisperu.mercurio.siac.domain.Equipo;
+import com.biosisperu.mercurio.siac.domain.Marcacion;
 import com.futronictech.AnsiSDKLib;
-import com.sun.glass.ui.View;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -18,8 +23,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -41,6 +45,8 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     private String mNewTmplName = null;
     public MyIcon m_FingerPrintImage;
     public BufferedImage m_hImage;
+    private EmpleadoControlador empleadoControlador;
+    private MercurioClient mercurioClient;
     /**
      * database directory name.
      */
@@ -57,6 +63,8 @@ public class dlgMarcaciones extends javax.swing.JDialog {
     public dlgMarcaciones(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        empleadoControlador = new EmpleadoControlador();
+        mercurioClient = MercurioClient.getInstance();
         mMatchScoreValue[0] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_LOW;
         mMatchScoreValue[1] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_LOW_MEDIUM;
         mMatchScoreValue[2] = AnsiSDKLib.FTR_ANSISDK_MATCH_SCORE_MEDIUM;
@@ -73,7 +81,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
             System.exit(0);
         }
         m_FingerPrintImage = new MyIcon();
-        
+
         FingerImage.setIcon(m_FingerPrintImage);
         imagenInicial();
         /**
@@ -317,8 +325,8 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         if (txtDni.getText().isEmpty()) {
             System.out.println("Entra aca");
             JOptionPane.showMessageDialog(this,
-                "Ingrese dni",
-                getTitle(), JOptionPane.ERROR_MESSAGE);
+                    "Ingrese dni",
+                    getTitle(), JOptionPane.ERROR_MESSAGE);
             return;
         }
         String dniANSI = txtDni.getText() + ".ansi";
@@ -331,8 +339,8 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         if (!(new File(m_DbDir + "//" + dniANSI)).exists() || !(new File(m_DbDir + "//" + dniANSI)).canRead()) {
             if (!(new File(m_DbDir + "//" + dniISO)).exists() || !(new File(m_DbDir + "//" + dniISO)).canRead()) {
                 JOptionPane.showMessageDialog(this,
-                    "Ingrese dni registrado",
-                    getTitle(), JOptionPane.ERROR_MESSAGE);
+                        "Ingrese dni registrado",
+                        getTitle(), JOptionPane.ERROR_MESSAGE);
                 return;
             } else {
                 tmplName = dniISO;
@@ -377,7 +385,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
         enrola.setVisible(true);
     }//GEN-LAST:event_btnMarcacionesActionPerformed
 
-    private void imagenInicial(){
+    private void imagenInicial() {
         try {
             m_FingerPrintImage.setImage(ImageIO.read(getClass().getResource("/image/fingerprint.jpg")));
             FingerImage.repaint();
@@ -385,6 +393,7 @@ public class dlgMarcaciones extends javax.swing.JDialog {
             Logger.getLogger(dlgMarcaciones.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
      * @param args the command line arguments
      */
@@ -661,6 +670,21 @@ public class dlgMarcaciones extends javax.swing.JDialog {
                     float[] matchResult = new float[1];
                     if (ansi_lib.VerifyTemplate(mFinger, mTmpl, img_buffer, matchResult)) {
                         String op_info = String.format("Resultado : %s - %s.", txtDni.getText(), matchResult[0] > mMatchScore ? "OK" : "FALLO");
+                        if (matchResult[0] > mMatchScore) {
+                            Empleado empleado = empleadoControlador.buscarPorDNI(txtDni.getText());
+                            Marcacion marcacion = new Marcacion();
+                            Equipo equipo = new Equipo();
+                            equipo.setId(1101L);
+                            empleado.setId(1051L);
+                            marcacion.setEmpleado(empleado);
+                            marcacion.setEquipo(equipo);
+                            marcacion.setEnviado(false);
+                            marcacion.setFechaHora(new Date());
+                            MarcacionControlador.getInstance().guardar(marcacion);
+                            mercurioClient.enviarMarcacion(marcacion);
+                            JOptionPane.showMessageDialog(null, "Empleado: " + empleado.getApellidos() + " " + empleado.getNombres(), "Marcación registrada", JOptionPane.CLOSED_OPTION);
+
+                        }
                         LabelMessage.setText(op_info);
                         m_hImage = new BufferedImage(ansi_lib.GetImageWidth(), ansi_lib.GetImageHeight(), BufferedImage.TYPE_BYTE_GRAY);
                         DataBuffer db1 = m_hImage.getRaster().getDataBuffer();

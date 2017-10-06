@@ -25,4 +25,14 @@ public class EmpleadoControlador extends Controlador<Empleado> {
     public void prepararCrear() {
         super.prepararCrear(); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public Empleado buscarPorDNI(String dni){
+        String jpql = "SELECT e FROM Empleado e WHERE e.dni = "+dni;
+        List<Empleado> empleadoList = this.getDao().buscar(jpql);
+        if(empleadoList != null && empleadoList.size() > 0){
+            return empleadoList.get(0);
+        }else{
+            return null;
+        }
+    }
 }

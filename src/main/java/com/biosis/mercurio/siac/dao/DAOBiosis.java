@@ -6,22 +6,14 @@
 package com.biosis.mercurio.siac.dao;
 
 
-import com.biosis.mercurio.siac.utiles.Encriptador;
-import com.personal.utiles.ParametrosUtil;
-import com.personal.utiles.PropertiesUtil;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.internal.SessionFactoryImpl;
 
 /**
  *
@@ -50,7 +42,7 @@ public class DAOBiosis<T> implements DAO<T> {
             properties.put("javax.persistence.jdbc.user", "admin");
             properties.put("javax.persistence.jdbc.password", "admin");
             properties.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-            properties.put("javax.persistence.jdbc.url", "jdbc:h2:C:\\Users\\Aldo\\Documents\\NetBeansProjects\\mercuriocliente\\db");
+            properties.put("javax.persistence.jdbc.url", "jdbc:h2:./db");
 //            properties.put("hibernate.show_sql", "true");
             properties.put("javax.persistence.schema-generation.database.action", "none");
 
