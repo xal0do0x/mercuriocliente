@@ -117,11 +117,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JPanel" name="jPanel2">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-              </Properties>
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="lblDni">
                   <Properties>
@@ -241,9 +236,6 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radActivo">
                   <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Verdana" size="12" style="1"/>
                     </Property>
@@ -260,9 +252,6 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radInactivo">
                   <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Verdana" size="12" style="1"/>
                     </Property>
@@ -291,9 +280,6 @@
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="radTercero">
                   <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Verdana" size="12" style="1"/>
                     </Property>
@@ -1622,11 +1608,6 @@
               </LayoutCode>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel3">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-              </Properties>
 
               <Layout>
                 <DimensionLayout dim="0">

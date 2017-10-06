@@ -168,7 +168,6 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         java.awt.GridBagLayout jPanel2Layout = new java.awt.GridBagLayout();
         jPanel2Layout.columnWidths = new int[] {0, 8, 0, 8, 0, 8, 0, 8, 0};
         jPanel2Layout.rowHeights = new int[] {0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0, 8, 0};
@@ -243,7 +242,6 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         jPanel2.add(lblCodigo, gridBagConstraints);
 
-        radActivo.setBackground(new java.awt.Color(255, 255, 255));
         radActivo.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         radActivo.setForeground(new java.awt.Color(27, 54, 93));
         radActivo.setText("Activo");
@@ -252,7 +250,6 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         gridBagConstraints.gridy = 8;
         jPanel2.add(radActivo, gridBagConstraints);
 
-        radInactivo.setBackground(new java.awt.Color(255, 255, 255));
         radInactivo.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         radInactivo.setForeground(new java.awt.Color(27, 54, 93));
         radInactivo.setText("Inactivo");
@@ -269,7 +266,6 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(txtCodigo, gridBagConstraints);
 
-        radTercero.setBackground(new java.awt.Color(255, 255, 255));
         radTercero.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         radTercero.setForeground(new java.awt.Color(27, 54, 93));
         radTercero.setText("Tercero?");
@@ -321,9 +317,7 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel2.add(cboProveedor, gridBagConstraints);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-
-        lblHuella1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        FingerImage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lblHuella2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
