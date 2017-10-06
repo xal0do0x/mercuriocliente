@@ -467,7 +467,6 @@ public class dlgEnrolamiento extends javax.swing.JDialog {
         ec.setSeleccionado(nuevo);
         
         ec.accion(Controlador.NUEVO);
-        this.dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnHuella1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuella1ActionPerformed

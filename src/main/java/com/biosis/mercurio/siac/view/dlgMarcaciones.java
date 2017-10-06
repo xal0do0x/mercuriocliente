@@ -372,6 +372,9 @@ public class dlgMarcaciones extends javax.swing.JDialog {
 
     private void btnMarcacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarcacionesActionPerformed
         // TODO add your handling code here:
+        dlgEnrolamiento enrola;
+        enrola = new dlgEnrolamiento(this, true);
+        enrola.setVisible(true);
     }//GEN-LAST:event_btnMarcacionesActionPerformed
 
     private void imagenInicial(){
