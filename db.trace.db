@@ -1142,3 +1142,53 @@ CREATE TABLE EMPLEADO_TEMPLATE(
 	NINDEX ASC,
 	NFINGERINDEX ASC
 ) [42001-196]
+2017-10-18 00:27:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-195]
+2017-10-18 00:27:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-195]
+2017-10-18 00:27:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-195]
+2017-10-18 00:27:58 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-196]
+2017-10-18 00:27:58 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-196]
+2017-10-18 00:27:58 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-196]
+2017-10-18 00:35:53 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-196]
+2017-10-18 00:35:53 jdbc[5]: null
+org.h2.message.DbException: La conexión no fue cerrada por la aplicación y esta siendo limpiada (garbage collected)
+The connection was not closed by the application and is garbage collected [90018-196]
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.message.DbException.get(DbException.java:144)
+	at org.h2.jdbc.JdbcConnection.closeOld(JdbcConnection.java:185)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:127)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:100)
+	at org.h2.Driver.connect(Driver.java:69)
+	at org.netbeans.modules.db.explorer.DbDriverManager.getConnection(DbDriverManager.java:131)
+	at org.netbeans.modules.db.explorer.DatabaseConnection.doConnect(DatabaseConnection.java:904)
+	at org.netbeans.modules.db.explorer.DatabaseConnection.access$200(DatabaseConnection.java:103)
+	at org.netbeans.modules.db.explorer.DatabaseConnection$3.run(DatabaseConnection.java:970)
+	at org.openide.util.RequestProcessor$Task.run(RequestProcessor.java:1423)
+	at org.openide.util.RequestProcessor$Processor.run(RequestProcessor.java:2033)
+Caused by: org.h2.jdbc.JdbcSQLException: La conexión no fue cerrada por la aplicación y esta siendo limpiada (garbage collected)
+The connection was not closed by the application and is garbage collected [90018-196]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	... 13 more
+2017-10-18 01:24:55 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-196]
+2017-10-18 01:24:55 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-196]
+2017-10-18 01:24:55 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: El objeto ya está cerrado
+The object is already closed [90007-196]
